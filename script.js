@@ -1,35 +1,64 @@
-//generate random password
-function generate(){
-    let complexity = document.getElementById("slider").value;
+const results = document.querySelector('#result');
+const UNInum = [48, 57];
+const UNIupper = [65, 90];
+const UNIlower = [97, 122];
+const UNIsym = [33, 47];
+
+document.querySelector('#generate').addEventListener('click', () => {
+    const length = document.querySelector('#length').value;
+    const upper = document.querySelector('#uppercase').checked;
+    const lower = document.querySelector('#lowercase').checked;
+    const numbers = document.querySelector('#numbers').checked;
+    const symbols = document.querySelector('#symbols').checked;
+
+    const randomSelector = [];
+    const password = [];
+
     
-    let values = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+";
 
-    let password = "";
-
-    for(var i = 0; i <= complexity; i++){
-        password = password + values.charAt(Math.floor(Math.random() * Math.floor(values.length - 1)));
+    if(upper === true) {
+        for(let i = UNIupper[0]; i <= UNIupper[1]; i++){
+        randomSelector.push(i)
+    }
     }
 
-    document.getElementById("display").value = password;
-
-    document.getElementById("lastNums").innerHTML += password + "<br/>";
-}
-
-document.getElementById("length").innerHTML = "Length: 25";
-
-document.getElementById("slider").oninput = function(){
-    if (document.getElementById("slider").value > 0){
-        document.getElementById("length").innerHTML = "Length:" + document.getElementById("slider").value;
+    if(lower === true) {
+        for(let i = UNIlower[0]; i <= UNIlower[1]; i++){
+        randomSelector.push(i)
     }
-    else {
-        document.getElementById("length").innerHTML = "Length: 1";
     }
-}
 
-function copyPassword(){
-    document.getElementById("display").select();
+    if(numbers === true) {
+        for(let i = UNInum[0]; i <= UNInum[1]; i++){
+        randomSelector.push(i)
+    }
+    }
 
-    document.execCommand("copy");
+    if(symbols === true) {
+        for(let i = UNIsym[0]; i <= UNIsym[1]; i++){
+        randomSelector.push(i)
+    }
+    }
 
-    alert("Password copied to clipboard!");
-}
+    for (let i = 0; i< length; i++) {
+        password.push(String.fromCharCode(randomSelector[Math.floor(Math.random()*randomSelector.length)]))
+    }
+    results.textContent = password.join('');
+
+})
+
+clipboard.addEventListener('click', () => {
+    const textarea = document.createElement('textarea');
+    const password = results.innerText;
+
+    if(!password) {
+        return;
+    }
+
+    textarea.value = password;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    textarea.remove();
+    alert('password Copied to Clipboard');
+});
